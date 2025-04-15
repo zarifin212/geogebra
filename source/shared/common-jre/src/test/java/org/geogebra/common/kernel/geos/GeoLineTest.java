@@ -84,4 +84,37 @@ public class GeoLineTest extends BaseUnitTest {
 		assertThat(add("Angle(D_0)/deg"), hasValue(unicode("240")));
 		assertThat(add("Angle(D_1)/deg"), hasValue(unicode("60")));
 	}
+
+	/**
+	* Test class for Path 1: Non-parallel Lines
+	* Path: 1 → 2 → 3 → 8
+	*/
+	@Test
+	public void testDistanceWithNonParallelLines() {
+		GeoLine l1 = add("Line((0,0),(1,1))");
+		GeoLine l2 = add("Line((0,1),(1,0))");
+		assertThat(l1.distance(l2), equalTo(0.0));
+	}
+
+	/**
+	* Test class for Path 2: Parallel Lines with X greater than Y
+	* Path: 1 → 2 → 4 → 5 → 7 → 8
+	*/
+	@Test
+	public void testDistanceWithParallelLinesXGreater() {
+		GeoLine l1 = add("Line((0,0),(1,0))"); // y = 0
+		GeoLine l2 = new GeoLine(l1.getConstruction(), 1, 0.0, -5.0); // x + 0y - 5 = 0
+		assertThat(l1.distance(l2), equalTo(5.0));
+	}
+
+	/**
+	* Test class for Path 3: Parallel Lines with Y greater than X
+	* Path: 1 → 2 → 4 → 6 → 7 → 8
+	*/
+	@Test
+	public void testDistanceWithParallelLinesYGreater() {
+		GeoLine l1 = add("Line((0,0),(0,1))"); // x = 0
+		GeoLine l2 = new GeoLine(l1.getConstruction(), 0.0, 1.0, -3.0); // 0x + y - 5 = 0
+		assertThat(l1.distance(l2), equalTo(5.0));
+	}
 }
